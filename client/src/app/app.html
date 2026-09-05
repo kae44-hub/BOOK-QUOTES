@@ -1,5 +1,18 @@
-<h1>Book & Quote Library</h1>
+<main>
+  <h1>Book & Quote Library</h1>
 
-<p>I am building this application with Angular and C#.</p>
+  <p>There are {{ books.length }} books in the catalogue.</p>
 
-<p>Day 1: My frontend is running.</p>
+  @for (book of books; track book.id) {
+    <article>
+      <h2>{{ book.title }}</h2>
+      <p>Author: {{ book.author }}</p>
+      <p>Published: {{ book.publicationDate }}</p>
+    </article>
+  } @empty {
+    <p>No books yet.</p>
+  }
+</main>
+<button type="button" (click)="addPracticeBook()">
+  Add practice book
+</button>
