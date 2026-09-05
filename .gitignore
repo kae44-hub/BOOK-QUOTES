@@ -1,0 +1,16 @@
+# Frontend dependencies and generated files
+node_modules/
+dist/
+.angular/
+
+# Backend generated files
+bin/
+obj/
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+*.user
+*.suo
+.vs/
