@@ -1,18 +1,21 @@
 <main>
   <h1>Book & Quote Library</h1>
 
-  <p>There are {{ books.length }} books in the catalogue.</p>
+  @if (loading()) {
+    <p role="status">Loading books...</p>
+  } @else if (errorMessage()) {
+    <p role="alert">{{ errorMessage() }}</p>
+  } @else {
+    <p>There are {{ books().length }} books in the catalogue.</p>
 
-  @for (book of books; track book.id) {
-    <article>
-      <h2>{{ book.title }}</h2>
-      <p>Author: {{ book.author }}</p>
-      <p>Published: {{ book.publicationDate }}</p>
-    </article>
-  } @empty {
-    <p>No books yet.</p>
+    @for (book of books(); track book.id) {
+      <article>
+        <h2>{{ book.title }}</h2>
+        <p>Author: {{ book.author }}</p>
+        <p>Published: {{ book.publicationDate }}</p>
+      </article>
+    } @empty {
+      <p>No books yet.</p>
+    }
   }
 </main>
-<button type="button" (click)="addPracticeBook()">
-  Add practice book
-</button>

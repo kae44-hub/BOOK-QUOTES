@@ -1,51 +1,38 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 interface Book {
   id: number;
   title: string;
   author: string;
   publicationDate: string;
 }
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-  protected readonly title = signal('client');
-  books: Book[] = [
-  {
-    id: 1,
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    publicationDate: '1813-01-28'
-  },
-  {
-    id: 2,
-    title: 'The Hobbit',
-    author: 'J. R. R. Tolkien',
-    publicationDate: '1937-09-21'
-  },
-  {
-    id: 3,
-    title: 'Nineteen Eighty-Four',
-    author: 'George Orwell',
-    publicationDate: '1949-06-08'
-  }
-];
-addPracticeBook(): void {
-  const nextId =
-    Math.max(0, ...this.books.map(book => book.id)) + 1;
+export class App implements OnInit {
+  private readonly http = inject(HttpClient);
 
-  this.books = [
-    ...this.books,
-    {
-      id: nextId,
-      title: 'My Practice Book',
-      author: 'Your Name',
-      publicationDate: '2026-01-01'
-    }
-  ];
-}
+  readonly books = signal<Book[]>([]);
+  readonly loading = signal(true);
+  readonly errorMessage = signal('');
+
+  ngOnInit(): void {
+    this.http.get<Book[]>('/api/books').subscribe({
+      next: (booksFromApi) => {
+        this.books.set(booksFromApi);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.errorMessage.set(
+          'Could not load the books. Check that the API is running.'
+        );
+        this.loading.set(false);
+      }
+    });
+  }
 }
