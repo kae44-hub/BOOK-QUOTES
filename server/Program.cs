@@ -5,6 +5,7 @@ using BookQuotes.Api.Data;
 using BookQuotes.Api.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -72,6 +73,19 @@ builder.Services.AddRateLimiter(o =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
+// Render terminates TLS before forwarding HTTP to the container. Only trust
+// its protocol header in the Render environment; never trust forwarded host/IP.
+if (builder.Configuration.GetValue<bool>("RENDER"))
+{
+    var forwarded = new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedProto,
+        ForwardLimit = 1
+    };
+    forwarded.KnownNetworks.Clear();
+    forwarded.KnownProxies.Clear();
+    app.UseForwardedHeaders(forwarded);
+}
 app.Use(async (context, next) =>
 {
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
@@ -99,3 +113,4 @@ if (builder.Configuration.GetValue<bool>("Database:AutoMigrate"))
 }
 app.Run();
 public partial class Program { }
+

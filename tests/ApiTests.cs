@@ -163,5 +163,20 @@ public sealed class ApiTests : IDisposable
         bad.DefaultRequestHeaders.Add("Cookie", "folio.access=" + new JwtSecurityTokenHandler().WriteToken(token));
         Assert.Equal(HttpStatusCode.Unauthorized, (await bad.GetAsync("/api/books")).StatusCode);
     }
+    [Fact]
+    public async Task Render_https_proxy_allows_secure_antiforgery_cookie()
+    {
+        using var production = new ApiFactory("Production", render: true);
+        using var client = production.CreateClient(new WebApplicationFactoryClientOptions
+        { BaseAddress = new Uri("http://localhost"), AllowAutoRedirect = false });
+        client.DefaultRequestHeaders.Add("X-Forwarded-Proto", "https");
+        var response = await client.GetAsync("/api/auth/csrf");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var cookie = response.Headers.GetValues("Set-Cookie").Single(c => c.StartsWith("folio.csrf="));
+        Assert.Contains("secure", cookie.ToLowerInvariant());
+        Assert.Contains("httponly", cookie.ToLowerInvariant());
+    }
+
     public void Dispose() => factory.Dispose();
 }
+

@@ -11,13 +11,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace BookQuotes.Tests;
 
 // Each test owns an isolated in-memory relational database. Never touches Neon.
-public sealed class ApiFactory : WebApplicationFactory<Program>
+public sealed class ApiFactory(string environment = "Development", bool render = false) : WebApplicationFactory<Program>
 {
     public const string SigningKey = "integration-tests-only-signing-key-64-characters-long-not-a-secret";
     private readonly SqliteConnection connection = new("Data Source=:memory:");
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment(environment);
+        builder.UseSetting("RENDER", render.ToString());
         builder.UseSetting("ConnectionStrings:DefaultConnection", "Host=unused");
         builder.UseSetting("Jwt:Key", SigningKey);
         builder.UseSetting("Database:AutoMigrate", "false");
@@ -38,3 +39,4 @@ public sealed class ApiFactory : WebApplicationFactory<Program>
         if (disposing) connection.Dispose();
     }
 }
+
