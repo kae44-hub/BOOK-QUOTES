@@ -1,5 +1,7 @@
 # Folio — books & the words that stay
 
+[![Build and test](https://github.com/kae44-hub/BOOK-QUOTES/actions/workflows/ci.yml/badge.svg)](https://github.com/kae44-hub/BOOK-QUOTES/actions/workflows/ci.yml)
+
 A responsive book library and personal quote collection built with **Angular 20**, **ASP.NET Core 9**, and **PostgreSQL**. Bootstrap 5 and Font Awesome provide the UI foundation; a custom reading-inspired design adds light and dark themes.
 
 ## Try it
