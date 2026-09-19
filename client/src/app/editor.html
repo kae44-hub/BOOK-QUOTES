@@ -1,0 +1,146 @@
+<div class="page-wrap container editor-wrap">
+  <a class="back-link" [routerLink]="'/' + collection"
+    ><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to
+    {{ isQuote ? 'My Quotes' : 'the library' }}</a
+  >
+  <div class="editor-layout">
+    <section class="editor-card">
+      <span class="eyebrow">{{ isQuote ? 'WORDS WORTH KEEPING' : 'MAKE ROOM ON THE SHELF' }}</span>
+      <h1>
+        {{ id ? 'Edit your ' + noun : isQuote ? 'Save a little inspiration.' : 'Add a new book.' }}
+      </h1>
+      <p class="muted">
+        {{
+          isQuote
+            ? 'A thought, a passage, a line you want to remember.'
+            : 'Add the details below. A good read deserves a place here.'
+        }}
+      </p>
+      @if (loading()) {
+        <div class="state-panel" role="status">Loading {{ noun }}…</div>
+      } @else if (loadFailed()) {
+        <div class="alert alert-danger" role="alert">{{ error() }}</div>
+        <button class="btn btn-outline-primary" (click)="load()">Try again</button>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+          <fieldset [disabled]="busy()">
+            @if (isQuote) {
+              <div class="mb-4">
+                <label class="form-label" for="text"
+                  >Quote <span class="required-mark">*</span></label
+                ><textarea
+                  class="form-control"
+                  id="text"
+                  formControlName="text"
+                  rows="5"
+                  maxlength="1000"
+                  placeholder="Write the words you want to keep…"
+                  aria-describedby="text-help"
+                  [attr.aria-invalid]="invalid('text')"
+                ></textarea
+                ><small id="text-help" class="field-hint" [class.field-error]="invalid('text')">{{
+                  invalid('text')
+                    ? 'Enter a quote of 1–1,000 characters.'
+                    : form.controls.text.value.length + ' / 1,000 characters'
+                }}</small>
+              </div>
+            } @else {
+              <div class="mb-4">
+                <label class="form-label" for="title"
+                  >Book title <span class="required-mark">*</span></label
+                ><input
+                  class="form-control"
+                  id="title"
+                  formControlName="title"
+                  maxlength="200"
+                  placeholder="e.g. Pride and Prejudice"
+                  aria-describedby="title-help"
+                  [attr.aria-invalid]="invalid('title')"
+                /><small
+                  id="title-help"
+                  class="field-hint"
+                  [class.field-error]="invalid('title')"
+                  >{{
+                    invalid('title')
+                      ? 'Enter a title of 1–200 characters.'
+                      : 'Use the title as it appears on the book.'
+                  }}</small
+                >
+              </div>
+            }
+            <div class="mb-4">
+              <label class="form-label" for="author"
+                >{{ isQuote ? 'Author or source' : 'Author' }}
+                <span class="required-mark">*</span></label
+              ><input
+                class="form-control"
+                id="author"
+                formControlName="author"
+                maxlength="200"
+                [placeholder]="isQuote ? 'Who said it? Use Unknown if needed.' : 'e.g. Jane Austen'"
+                aria-describedby="author-help"
+                [attr.aria-invalid]="invalid('author')"
+              /><small
+                id="author-help"
+                class="field-hint"
+                [class.field-error]="invalid('author')"
+                >{{
+                  invalid('author')
+                    ? 'Enter an author or source of 1–200 characters.'
+                    : 'Give credit to the person behind the words.'
+                }}</small
+              >
+            </div>
+            @if (!isQuote) {
+              <div class="mb-4">
+                <label class="form-label" for="publicationDate"
+                  >Publication date <span class="required-mark">*</span></label
+                ><input
+                  class="form-control date-input"
+                  id="publicationDate"
+                  type="date"
+                  formControlName="publicationDate"
+                  aria-describedby="date-help"
+                  [attr.aria-invalid]="invalid('publicationDate')"
+                /><small
+                  id="date-help"
+                  class="field-hint"
+                  [class.field-error]="invalid('publicationDate')"
+                  >{{
+                    invalid('publicationDate')
+                      ? 'Choose a publication date.'
+                      : 'The publication date of this edition.'
+                  }}</small
+                >
+              </div>
+            }
+            @if (error()) {
+              <div class="alert alert-danger" role="alert">{{ error() }}</div>
+            }
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                {{ busy() ? 'Saving…' : id ? 'Save changes' : 'Save ' + noun }}
+                <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+              </button>
+              @if (!busy()) {
+                <a class="btn btn-outline-primary" [routerLink]="'/' + collection">Cancel</a>
+              }
+            </div>
+          </fieldset>
+        </form>
+      }
+    </section>
+    <aside class="editor-aside">
+      <span class="large-asterisk" aria-hidden="true">✳</span>
+      <h2>{{ isQuote ? 'Some words are worth returning to.' : 'Every book opens a door.' }}</h2>
+      <p>
+        {{
+          isQuote
+            ? 'This space is yours. Only you can see, edit or remove your quotes.'
+            : 'Books are shared with everyone in the library. Add thoughtfully, explore often.'
+        }}
+      </p>
+      <span class="eyebrow">{{ isQuote ? 'YOUR PRIVATE COLLECTION' : 'THE FOLIO LIBRARY' }}</span>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="page-wrap container">
+  <section class="quotes-heading">
+    <div>
+      <span class="eyebrow"><span class="tiny-line"></span> YOUR PERSONAL ANTHOLOGY</span>
+      <h1>Words that <em>stay.</em></h1>
+      <p>The passages, thoughts and little reminders you want to return to.</p>
+      <span class="privacy-label"
+        ><i class="fa-solid fa-lock" aria-hidden="true"></i> Only visible to you</span
+      >
+    </div>
+    <a routerLink="/quotes/new" class="btn btn-primary"
+      ><i class="fa-solid fa-plus" aria-hidden="true"></i> Add a quote</a
+    >
+  </section>
+  <div class="section-heading">
+    <h2>
+      My Quotes <span class="count-pill">{{ quotes().length }}</span>
+    </h2>
+    <span class="muted small">A collection of your own.</span>
+  </div>
+  <div class="search-field quote-search">
+    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i
+    ><input
+      type="search"
+      class="form-control"
+      aria-label="Search your quotes"
+      placeholder="Find words or an author…"
+      [value]="query()"
+      (input)="query.set($any($event.target).value)"
+    />
+  </div>
+  @if (loading()) {
+    <div class="state-panel" role="status">Gathering your words…</div>
+  } @else if (error()) {
+    <div class="state-panel">
+      <p role="alert">{{ error() }}</p>
+      <button class="btn btn-outline-primary" (click)="load()">Try again</button>
+    </div>
+  } @else if (!quotes().length) {
+    <div class="state-panel empty-panel">
+      <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+      <h3>What will you keep?</h3>
+      <p>Save a line that makes you think, smile or see things differently.</p>
+      <a routerLink="/quotes/new" class="btn btn-primary">Save your first quote</a>
+    </div>
+  } @else if (!filtered().length) {
+    <div class="state-panel">
+      <h3>No matching quotes</h3>
+      <button class="btn btn-outline-primary" (click)="query.set('')">Clear search</button>
+    </div>
+  } @else {
+    <div class="quote-grid">
+      @for (quote of filtered(); track quote.id; let i = $index) {
+        <article [class]="'quote-card quote-tone-' + (i % 4)">
+          <i class="fa-solid fa-quote-left quote-symbol" aria-hidden="true"></i>
+          <blockquote>{{ quote.text }}</blockquote>
+          <p class="quote-credit">— {{ quote.author }}</p>
+          <div class="card-actions">
+            <a [routerLink]="['/quotes', quote.id, 'edit']"
+              ><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit</a
+            ><button
+              (click)="askDelete(quote)"
+              [attr.aria-label]="'Delete quote by ' + quote.author"
+            >
+              <i class="fa-solid fa-trash-can" aria-hidden="true"></i> Delete
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+    <p class="results-note">
+      Showing {{ filtered().length }} of {{ quotes().length }} quotes · Yours to keep, change or let
+      go.
+    </p>
+  }
+</div>
+<dialog
+  #deleteDialog
+  class="confirm-dialog"
+  aria-labelledby="delete-quote-title"
+  (cancel)="deleting() ? $event.preventDefault() : closeDialog()"
+>
+  <span class="dialog-icon"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></span>
+  <h2 id="delete-quote-title">Let this quote go?</h2>
+  <p>It will be removed from your collection. This cannot be undone.</p>
+  @if (deleteError()) {
+    <p class="alert alert-danger" role="alert">{{ deleteError() }}</p>
+  }
+  <div class="dialog-actions">
+    <button class="btn btn-outline-primary" (click)="closeDialog()" [disabled]="deleting()">
+      Keep quote</button
+    ><button class="btn btn-danger" (click)="remove()" [disabled]="deleting()">
+      {{ deleting() ? 'Removing…' : 'Remove quote' }}
+    </button>
+  </div>
+</dialog>

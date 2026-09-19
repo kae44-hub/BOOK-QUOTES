@@ -1,0 +1,125 @@
+<section class="auth-layout container">
+  <div class="auth-story">
+    <span class="eyebrow"><span class="tiny-line"></span> YOUR READING COMPANION</span>
+    <h1>Good books.<br />Lasting <em>words.</em></h1>
+    <p>
+      A shared library to explore. A personal collection of words to keep. Make a little room for
+      both.
+    </p>
+    <div class="book-scene" aria-hidden="true">
+      <div class="scene-circle"></div>
+      <div class="scene-book book-one">
+        <span>THE ART<br />OF<br />NOTICING</span><small>A LITTLE EVERY DAY</small>
+      </div>
+      <div class="scene-book book-two">
+        <span>ONE MORE<br />CHAPTER</span>
+        <div class="cover-sun"></div>
+        <small>YOUR NEXT DISCOVERY</small>
+      </div>
+      <div class="scene-shelf"></div>
+      <span class="scene-star">✳</span>
+    </div>
+    <div class="story-caption">
+      <i class="fa-solid fa-bookmark" aria-hidden="true"></i
+      ><span>Your next chapter starts here.</span>
+    </div>
+  </div>
+  <div class="auth-panel">
+    <span class="eyebrow">{{ register ? 'MAKE YOURSELF AT HOME' : 'WELCOME TO FOLIO' }}</span>
+    <h2>{{ register ? 'Start your collection.' : 'Welcome back.' }}</h2>
+    <p class="muted">
+      {{
+        register
+          ? 'Create an account to explore the library and keep your favourite quotes.'
+          : 'Sign in to pick up where you left off.'
+      }}
+    </p>
+    @if (success()) {
+      <div class="success-panel" role="status">
+        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+        <h3>You’re all set.</h3>
+        <p>Your account and five starter quotes are ready.</p>
+        <a class="btn btn-primary" routerLink="/login"
+          >Continue to sign in <i class="fa-solid fa-arrow-right" aria-hidden="true"></i
+        ></a>
+      </div>
+    } @else {
+      @if (expired) {
+        <div class="alert alert-info">Your session ended. Sign in again to continue.</div>
+      }
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <fieldset [disabled]="busy()">
+          <div class="mb-4">
+            <label class="form-label" for="username">Username</label
+            ><input
+              class="form-control"
+              id="username"
+              formControlName="username"
+              autocomplete="username"
+              maxlength="30"
+              placeholder="Your username"
+              aria-describedby="username-help"
+              [attr.aria-invalid]="form.controls.username.touched && form.controls.username.invalid"
+            /><small
+              id="username-help"
+              class="field-hint"
+              [class.field-error]="form.controls.username.touched && form.controls.username.invalid"
+              >3–30 letters, numbers or underscores.</small
+            >
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="password">Password</label>
+            <div class="password-field">
+              <input
+                class="form-control"
+                id="password"
+                [type]="reveal() ? 'text' : 'password'"
+                formControlName="password"
+                [attr.autocomplete]="register ? 'new-password' : 'current-password'"
+                maxlength="128"
+                placeholder="At least 10 characters"
+                aria-describedby="password-help"
+                [attr.aria-invalid]="
+                  form.controls.password.touched && form.controls.password.invalid
+                "
+              /><button
+                type="button"
+                class="icon-button"
+                (click)="reveal.set(!reveal())"
+                [attr.aria-label]="reveal() ? 'Hide password' : 'Show password'"
+              >
+                <i
+                  [class]="reveal() ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
+            <small
+              id="password-help"
+              class="field-hint"
+              [class.field-error]="form.controls.password.touched && form.controls.password.invalid"
+              >Use 10–128 characters. A longer passphrase works well.</small
+            >
+          </div>
+          @if (error()) {
+            <div class="alert alert-danger" role="alert">{{ error() }}</div>
+          }
+          <button class="btn btn-primary w-100 auth-submit" type="submit">
+            {{ busy() ? 'Please wait…' : register ? 'Create account' : 'Sign in' }}
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </fieldset>
+      </form>
+      <p class="auth-switch">
+        {{ register ? 'Already have an account?' : 'New to Folio?' }}
+        <a [routerLink]="register ? '/login' : '/register'">{{
+          register ? 'Sign in' : 'Create an account'
+        }}</a>
+      </p>
+      <div class="auth-footnote">
+        <i class="fa-solid fa-lock" aria-hidden="true"></i> Your quotes are private. Your curiosity
+        is welcome.
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,28 @@
+name: Build and test
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: dotnet test tests/BookQuotes.Tests.csproj --configuration Release
+      - run: npm ci
+        working-directory: client
+      - run: npm test -- --watch=false --browsers=ChromeHeadless
+        working-directory: client
+      - run: npm run build
+        working-directory: client
+      - run: docker build -t folio:ci .

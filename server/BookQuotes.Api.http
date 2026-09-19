@@ -1,6 +1,11 @@
-@BookQuotes.Api_HostAddress = http://localhost:5230
+@host = http://localhost:5230
 
-GET {{BookQuotes.Api_HostAddress}}/weatherforecast/
+### Process health
+GET {{host}}/health
+
+### Protected catalogue (401 until signed in)
+GET {{host}}/api/books
 Accept: application/json
 
-###
+### Use the Angular UI for registration and cookie/CSRF-authenticated writes.
+### API behavior and authentication examples are in tests/ApiTests.cs.

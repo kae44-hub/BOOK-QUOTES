@@ -1,0 +1,156 @@
+<div class="page-wrap container">
+  <section class="library-hero">
+    <div>
+      <span class="eyebrow"><span class="tiny-line"></span> THE SHARED COLLECTION</span>
+      <h1>A home for your<br /><em>next chapter.</em></h1>
+      <p>Discover, organise and return to the books worth keeping.</p>
+      <a routerLink="/books/new" class="btn btn-primary"
+        ><i class="fa-solid fa-plus" aria-hidden="true"></i> Add New Book</a
+      >
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <span class="hero-orbit"></span>
+      <div class="spine spine-a">THE QUIET HOURS</div>
+      <div class="spine spine-b">Stories to keep</div>
+      <div class="spine spine-c">ONE MORE CHAPTER</div>
+      <div class="spine spine-d">FOLIO / VOL. 01</div>
+      <div class="hero-bookend"></div>
+      <span class="hero-spark">✳</span><span class="art-caption">A SHELF FULL OF POSSIBILITY</span>
+    </div>
+  </section>
+  <div class="collection-layout">
+    <section class="collection-main" aria-labelledby="collection-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR NEXT GOOD READ</span>
+          <h2 id="collection-title">
+            The library <span class="count-pill">{{ books().length }}</span>
+          </h2>
+        </div>
+        <label class="sort-control"
+          ><span class="visually-hidden">Sort books</span
+          ><select
+            class="form-select"
+            [value]="sort()"
+            (change)="sort.set($any($event.target).value)"
+          >
+            <option value="newest">Recently added</option>
+            <option value="title">Title A–Z</option>
+          </select></label
+        >
+      </div>
+      <div class="search-field">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i
+        ><input
+          class="form-control"
+          type="search"
+          aria-label="Search books by title or author"
+          placeholder="Find a title or an author…"
+          [value]="query()"
+          (input)="query.set($any($event.target).value)"
+        />
+      </div>
+      @if (loading()) {
+        <div class="state-panel" role="status">
+          <span class="spinner-border spinner-border-sm"></span> Opening the library…
+        </div>
+      } @else if (error()) {
+        <div class="state-panel">
+          <p role="alert">{{ error() }}</p>
+          <button class="btn btn-outline-primary" (click)="load()">Try again</button>
+        </div>
+      } @else if (!books().length) {
+        <div class="state-panel empty-panel">
+          <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+          <h3>Every library begins with one book.</h3>
+          <p>Add a favourite, a classic or the book you’re reading now.</p>
+          <a routerLink="/books/new" class="btn btn-primary">Add your first book</a>
+        </div>
+      } @else if (!filtered().length) {
+        <div class="state-panel">
+          <h3>No matching books</h3>
+          <p>Try a different title or author.</p>
+          <button class="btn btn-outline-primary" (click)="query.set('')">Clear search</button>
+        </div>
+      } @else {
+        <div class="book-grid">
+          @for (book of filtered(); track book.id) {
+            <article class="book-card">
+              <div [class]="'book-cover cover-' + (book.id % 6)" aria-hidden="true">
+                <span class="cover-top">THE FOLIO LIBRARY</span
+                ><span class="cover-title">{{ book.title }}</span
+                ><span class="cover-motif">✳</span
+                ><span class="cover-author">{{ book.author }}</span>
+              </div>
+              <div class="book-info">
+                <h3>{{ book.title }}</h3>
+                <p class="book-author">{{ book.author }}</p>
+                <p class="book-date">
+                  <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+                  {{ (book.publicationDate + 'T00:00:00Z') | date: 'MMM d, y' : 'UTC' }}
+                </p>
+                <div class="card-actions">
+                  <a [routerLink]="['/books', book.id, 'edit']"
+                    ><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit</a
+                  ><button (click)="askDelete(book)" [attr.aria-label]="'Delete ' + book.title">
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Delete</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+        <p class="results-note">Showing {{ filtered().length }} of {{ books().length }} books</p>
+      }
+    </section>
+    <aside class="collection-aside">
+      <div class="aside-note">
+        <span class="eyebrow">A SMALL REMINDER</span
+        ><i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+        <p>There is always<br />another page<br />to turn.</p>
+        <span class="note-credit">— Folio notes</span
+        ><a routerLink="/quotes"
+          >Keep the words that stay <i class="fa-solid fa-arrow-right" aria-hidden="true"></i
+        ></a>
+      </div>
+      <div class="shelf-stats">
+        <span class="eyebrow">ON THE SHELF</span>
+        <div>
+          <strong>{{ books().length }}</strong
+          ><span>books to explore</span>
+        </div>
+        <div>
+          <strong>{{ authors() }}</strong
+          ><span>different authors</span>
+        </div>
+      </div>
+      <p class="aside-caption">
+        <i class="fa-solid fa-earth-europe" aria-hidden="true"></i> A shared library.<br />A
+        personal reading journey.
+      </p>
+    </aside>
+  </div>
+</div>
+<dialog
+  #deleteDialog
+  class="confirm-dialog"
+  aria-labelledby="delete-book-title"
+  (cancel)="deleting() ? $event.preventDefault() : closeDialog()"
+>
+  <span class="dialog-icon"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></span>
+  <h2 id="delete-book-title">Remove this book?</h2>
+  <p>
+    “{{ pending()?.title }}” will be removed from the shared library for everyone. This cannot be
+    undone.
+  </p>
+  @if (deleteError()) {
+    <p class="alert alert-danger" role="alert">{{ deleteError() }}</p>
+  }
+  <div class="dialog-actions">
+    <button class="btn btn-outline-primary" (click)="closeDialog()" [disabled]="deleting()">
+      Keep book</button
+    ><button class="btn btn-danger" (click)="remove()" [disabled]="deleting()">
+      {{ deleting() ? 'Removing…' : 'Remove book' }}
+    </button>
+  </div>
+</dialog>

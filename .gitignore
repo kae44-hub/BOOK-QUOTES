@@ -14,3 +14,7 @@ obj/
 *.user
 *.suo
 .vs/
+# Built single-origin frontend
+server/wwwroot/
+TestResults/
+*.trx
