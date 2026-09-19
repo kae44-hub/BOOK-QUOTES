@@ -8,7 +8,7 @@ A responsive book library and personal quote collection built with **Angular 20*
 
 Create an account, sign in, and explore the shared library. Each account starts with five editable original quotes. Books are shared between authenticated users; quotes belong only to their owner.
 
-The live deployment URL will be added after the Render deployment is verified.
+[Open Folio](https://folio-book-quotes.onrender.com). The free instance may take a little time to wake up after inactivity.
 
 ## Features
 
@@ -106,6 +106,8 @@ All book and quote endpoints require authentication. POST, PUT and DELETE reques
 - **Demo scope:** no email verification, password recovery, roles or audit log. Rate limiting is in-process and uses the connecting IP; behind a reverse proxy it may group visitors. A larger deployment should add trusted proxy configuration, distributed rate limits and stronger abuse monitoring.
 - **Deployment:** the free Render instance can sleep when idle. Data stays in Neon. Startup migrations suit this single-instance demonstration; a larger deployment should apply reviewed migrations in a separate release step.
 - **Framework lifecycle:** .NET 9 is used because the brief explicitly requires it. Review support status and plan a supported LTS upgrade before long-term production use.
+- **Render HTTPS:** Render terminates TLS at its proxy. When its RENDER environment flag is true, the app processes only the last forwarded protocol header so secure antiforgery cookies work. Forwarded client IP and host are not trusted. This assumes the container is reachable through Render ingress; review proxy trust before using another host.
 - **Frontend budget:** Bootstrap and icon CSS are bundled locally. No third-party font or image service is required.
 
 See [deployment steps](docs/DEPLOYMENT.md), [project walkthrough](docs/WALKTHROUGH.md) and [submission checklist](docs/SUBMISSION.md).
+

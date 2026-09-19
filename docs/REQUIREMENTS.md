@@ -1,7 +1,7 @@
 # Assignment requirement audit
 
 Checked against the supplied internship brief on 19 September 2026.
-Application features are implemented. Submission is not yet complete: public hosting and broader device/browser verification remain outstanding.
+Application features are implemented and the public HTTPS deployment is verified. Physical-device and broader browser verification remain outstanding; the submission email has not been sent.
 
 | Requirement | Status | Implementation / evidence |
 |---|---|---|
@@ -16,7 +16,7 @@ Application features are implemented. Submission is not yet complete: public hos
 | Delete removes book from list | Implemented and API-tested | DELETE followed by signal-list update; confirmation dialog included |
 | Registration and username/password sign-in | Complete | Separate registration and sign-in views; verified against Neon |
 | Backend issues JWT after successful sign-in | Complete | Signed token returned in Set-Cookie |
-| Secure token storage and subsequent requests | Complete locally; HTTPS deployment check pending | HttpOnly cookie, Secure in production, SameSite=Strict; browser attaches cookie |
+| Secure token storage and subsequent requests | Complete; HTTPS deployment verified | HttpOnly cookie, Secure in production, SameSite=Strict; browser attaches cookie |
 | Backend token validation protects CRUD | Complete | Authorize on both controllers; signature, issuer, audience, expiry and session validation |
 | Separate My Quotes view | Complete | /quotes with visible My Quotes heading |
 | Five quotes shown | Complete | Five original editable starter quotes are created for every new account |
@@ -28,8 +28,8 @@ Application features are implemented. Submission is not yet complete: public hos
 | Bootstrap buttons, forms and layout | Complete | Bootstrap 5.3.8; btn, form-control, form-select, container and other classes |
 | Font Awesome icons render | Complete | Font Awesome 6.7.2 solid icons, bundled locally; inspected in UI |
 | Light/dark toggle (extra challenge) | Complete | Toggle and both themes checked; preference stored locally |
-| Free hosted application | Pending | Render Docker Blueprint is ready, free plan and Frankfurt configured; account sign-in/deployment needed |
-| Published page link and GitHub link | Partial | GitHub is public; live site URL does not exist yet; email draft is not sent |
+| Free hosted application | Complete | https://folio-book-quotes.onrender.com — Render free Docker service, Frankfurt |
+| Published page link and GitHub link | Ready to send | Public app and GitHub links are in the submission draft; email not sent |
 
 ## Interpretation of the brief
 
@@ -41,17 +41,18 @@ The five initial quotes are original starter text attributed to Folio notes. The
 
 ## Verified checks
 
-The latest implementation commit, 8f5c681, passed GitHub Actions: API tests, Angular tests, production frontend build and Docker build.
-- 10 API integration test cases.
+The latest implementation commit, c50ab1b, passed GitHub Actions: API tests, Angular tests, production frontend build and Docker build.
+- 11 API integration test cases.
 - 4 Angular test cases.
 - Separate real PostgreSQL CRUD smoke test.
 - Responsive and theme browser checks described in VERIFICATION.md.
 
 ## Finish before sending
 
-1. Complete Render sign-in and deploy the repository.
-2. Test the public HTTPS URL: register, sign in, book CRUD, quote CRUD, refresh, logout.
+1. Completed: Render deployment.
+2. Completed: public HTTPS registration, sign-in, book/quote CRUD, refresh and logout checks.
 3. Test that live URL in another browser and on an actual phone/tablet where available.
-4. Add the verified live URL to README and the submission draft.
+4. Completed: verified live URL added to README and submission draft.
 5. Review the draft and send both links to Marco. No email has been sent by the assistant.
+
 

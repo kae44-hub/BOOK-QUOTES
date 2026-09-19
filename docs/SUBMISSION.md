@@ -2,16 +2,16 @@
 
 ## Before sending
 
-- [ ] Verify the public HTTPS URL opens in a signed-out browser.
-- [ ] Register a new account and sign in.
-- [ ] Add, edit and delete a disposable book; refresh to confirm persistence.
-- [ ] Confirm a new account has five quotes; add, edit and delete a disposable quote.
+- [x] Verify the public HTTPS URL opens in a signed-out browser.
+- [x] Register a new account and sign in.
+- [x] Add, edit and delete a disposable book; refresh to confirm persistence.
+- [x] Confirm a new account has five quotes; add, edit and delete a disposable quote.
 - [ ] Confirm another account cannot see the first account's quotes.
 - [ ] Check desktop, tablet and mobile layouts, navigation and both themes.
 - [ ] Sign out and verify protected routes return to login.
-- [ ] Confirm GitHub contains the latest version, setup instructions and migrations.
-- [ ] Confirm no passwords, connection strings or signing keys are committed.
-- [ ] Replace the live URL placeholder below.
+- [x] Confirm GitHub contains the latest version, setup instructions and migrations.
+- [x] Confirm no passwords, connection strings or signing keys are committed.
+- [x] Add the verified live URL below.
 - [ ] Review the walkthrough and practise a short demo.
 
 ## Email draft (review and send yourself)
@@ -22,8 +22,8 @@ Hi Marco,
 
 Thank you for the opportunity to complete the assignment.
 
-Live application: [INSERT VERIFIED HTTPS URL]
-Source code: https://github.com/kae44-hub/book-quotes
+Live application: https://folio-book-quotes.onrender.com
+Source code: https://github.com/kae44-hub/BOOK-QUOTES
 
 The application includes book CRUD, registration and JWT authentication, a private quote collection, responsive Bootstrap layouts, Font Awesome icons and a light/dark theme. The repository includes setup instructions, automated tests and notes on the implementation.
 
@@ -37,3 +37,5 @@ Karen El Helayel
 ## During the discussion
 
 Explain the project accurately. Be transparent about assistance and tools when asked. Do not describe features or tests as complete unless you have verified them.
+
+
